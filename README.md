@@ -1,100 +1,88 @@
+index.html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LembreiFácil</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #4e73df, #1cc88a);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LembreiFácil</title>
 
-    .container {
-      background: white;
-      width: 95%;
-      max-width: 400px;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      text-align: center;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
 
-    h1 {
-      margin-bottom: 10px;
-      color: #4e73df;
-    }
+.container {
+  background: white;
+  width: 95%;
+  max-width: 400px;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
 
-    p {
-      color: #666;
-      font-size: 14px;
-    }
+h1 {
+  color: #4e73df;
+}
 
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
 
-    button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 8px;
-      background-color: #4e73df;
-      color: white;
-      font-size: 15px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4e73df;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
 
-    button:hover {
-      background-color: #2e59d9;
-    }
+button:hover {
+  background-color: #2e59d9;
+}
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px;
-      text-align: left;
-    }
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  text-align: left;
+}
 
-    li {
-      background: #f8f9fc;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+li {
+  background: #f8f9fc;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-    .delete {
-      background: red;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      padding: 5px 8px;
-      cursor: pointer;
-    }
-
-    @media (max-width: 500px) {
-      body {
-        height: auto;
-        padding: 20px 0;
-      }
-    }
-  </style>
+.delete {
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
@@ -108,28 +96,48 @@
 </div>
 
 <script>
-  function adicionarTarefa() {
-    const input = document.getElementById("tarefa");
-    const texto = input.value.trim();
+let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
 
-    if (texto === "") {
-      alert("Digite uma tarefa!");
-      return;
-    }
+function salvarTarefas() {
+  localStorage.setItem("tarefas", JSON.stringify(tarefas));
+}
 
+function renderizarTarefas() {
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  tarefas.forEach((tarefa, index) => {
     const li = document.createElement("li");
     li.innerHTML = `
-      ${texto}
-      <button class="delete" onclick="removerTarefa(this)">X</button>
+      ${tarefa}
+      <button class="delete" onclick="removerTarefa(${index})">X</button>
     `;
+    lista.appendChild(li);
+  });
+}
 
-    document.getElementById("lista").appendChild(li);
-    input.value = "";
+function adicionarTarefa() {
+  const input = document.getElementById("tarefa");
+  const texto = input.value.trim();
+
+  if (texto === "") {
+    alert("Digite uma tarefa!");
+    return;
   }
 
-  function removerTarefa(botao) {
-    botao.parentElement.remove();
-  }
+  tarefas.push(texto);
+  salvarTarefas();
+  renderizarTarefas();
+  input.value = "";
+}
+
+function removerTarefa(index) {
+  tarefas.splice(index, 1);
+  salvarTarefas();
+  renderizarTarefas();
+}
+
+renderizarTarefas();
 </script>
 
 </body>
